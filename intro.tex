@@ -1,0 +1,171 @@
+\section{Introduction}
+\label{sec:intro}
+Almost 10 years ago, the Standard Performance Evaluation Corporation (SPEC)
+recognized the need for power benchmarks and initiated SPECpower to ``augment
+existing industry standard benchmarks with a power/energy measurement.''
+(http:/ /www.spec.org/power/) . This effort has been very successful in
+helping the industry drive improvements in energy efficiency, especially for
+servers.
+
+There is an interest in understanding the energy efficiency of large scale
+high performance computing (HPC) systems that isn't fully addressed with
+SPECpower. Several HPC benchmarking efforts have added a power measurement.
+These include the Green500, the GreenGraph500 and an optional power
+measurement for the Top500 and SPEC's OMP2012 benchmark.
+
+The methodology requirements for SPEC's OMP2012 power measurements are based
+on the SPEC Power and Performance Benchmark Methodology, which is a very
+comprehensive methodology for server performance benchmark designers and
+implementers who want to integrate a power component into their benchmark.
+The SPEC OMP2012 benchmark is designed for HPC systems, not servers. The
+utility and correctness of the SPEC Power and Performance Benchmark
+Methodology for the HPC environment will be tested with its use for the SPEC
+OMP2012 benchmark. Although there has been at least one research paper which
+documents power consumption while running SPEC OMP2012 (SPEC OMP2012 -- An
+Application Benchmark Suite for Parallel Systems Using OpenMP by Matthias S.
+Muller), as of August, 2013 there were not any reported results on the SPEC
+OMP2012 website. Further use of the SPEC Power and Performance Benchmark
+Methodology for the OMP2012 benchmark may test its utility and correctness for
+the HPC environment.
+
+Primarily driven by a vision for rapid and broad adoption of their
+methodology, benchmark and metric, the Green500 had initially developed a very
+flexible and easily implemented set of run rules for measuring power. These
+fell short of the guidance provided by the SPEC Power and Performance
+Benchmark Methodology in several key areas. The Green500 run rules (as well
+as the Top500 rules for measuring power) were also falling short of
+expectations of the supercomputing community. In early 2011, the Energy
+Efficient HPC Working Group undertook a survey of power submissions to the
+Green500 and the Top500 lists. The survey demonstrates that there was a wide
+variation in the quality of the measurements used for reporting power. [10] A
+few of the power submissions were very comprehensive and reflected a high
+level of quality. A number of the submissions were based on sampling and
+extrapolation and reflected a moderate level of quality. But almost half of
+the Green500 list power numbers were not based on measured power, but were
+simply derived from the vendor specifications. (Submissions for power use in
+the Top500 were more sparse, so the Green500 list was used as the larger
+sample set.) The survey identified the following methodology complexities and
+issues:
+
+\begin{itemize}
+
+    \item fuzzy lines of demarcation between the computer system and the data
+        center infrastructure, e.g., fans, power supplies, liquid cooling
+
+    \item shared resources, e.g., storage and networking
+
+    \item limitations on data center and system instrumentation for system
+        level power measurement.
+
+\end{itemize}
+
+
+Sections 2 and 3 of this paper describes the results of collaborative effort led by
+the Energy Efficient HPC Working Group with the Green500, the Top500 and The
+Green Grid to address the complexities and issues identified with the survey. The
+output of this collaborative effort is an improved power measurement methodology
+for use with any system-level HPC benchmark. To a large extent, this improved
+methodology reflects the guidance provided by the SPEC Power and Performance
+Benchmark Methodology document. There are increasingly rigorous measurement
+quality levels described by the methodology. Level 1 is similar to the Rev0.9
+Green500 run rules. Level 2 is more comprehensive and still widely achievable.
+Level3, the ``current best'', is only possible at a few sites.
+
+A broad community- based process was followed for developing the improved
+power measurement methodology. The Energy Efficient HPC Working Group has
+almost 400 members with 50\% from government agencies, 30\% from industry and
+20\% from academic institutions. There are members from 20 different
+countries, mostly the United States and Europe. This methodology was
+generated and went through review with multiple opportunities for
+participation from the entire EE HPC WG. It also went through a review and
+approval from The Green500, the Top500 and The Green Grid. This methodology
+has gone through two testing phases with feedback from alpha testing resulting
+in modifications for the revision that went though beta testing. Both test
+phases included reporting on the test results to the broader community at
+major supercomputing conferences (ISC12 and SC12). The Green500 implemented
+this improved methodology as of its June 2013 List. Sections 4 though 6 of
+this paper describe testing results from LRZ, Argonne and Calcul Quebec as
+illustrative case studies for the methodology.
+
+%OLD INTRO, kept for references
+%It has been at least 10 years since the recognition
+%that ``power consumption is now the major technical problem facing the
+%semiconductor industry.
+%\cite{kim:leakage}
+
+%Five years later, in 2008,
+%the ``Exascale Computing Study: Technology Challenges in Achieving Exascale Systems''
+%galvanized HPC vendors and center operators
+%by setting a definitive power challenge for the HPC community to deliver an Exascale
+%system with a 20 Megawatt (MW) limit \cite{kogge:exascale}.
+
+%At the 2008 International Conference for High Performance Computing, Networking,
+%Storage and Analysis (a.k.a., SC08), the workshop
+%on ``Power Efficiency and the Path to Exascale Computing'' \cite{shalf:wope}
+%explored some implications of the 20 MW target
+%for Exascale computing in the report. The workshop considered the question of
+%how to achieve 1000x improvement in performance with only a 10x increase in power
+%in 10 years and with a finite development budget. The 20MW target is driven primarily
+%by operational costs of energy (20MW equates to approximately \$20M (USD) annual
+%energy cost in the United States). It has been and continues to be a very effective
+%stake in the ground for mobilizing the HPC community.
+
+%In November 2012, four years later, Oak Ridge National Laboratory's Titan system
+%achieved 27 Petaflop/s using approximately 8MW of power. [4] Using Sequoia as a
+%reference, we still must get a roughly 40X performance improvement with only 2.5X
+%increase in power. The timeline now seems to be 2020 instead of 2018, but there
+%are concerns that the current level of investments and innovation may deliver
+%the Exascale system in name only. What hasn't changed is that the 20MW target
+%equates to \$20M (USD) annual energy cost. There is clearly a power, energy,
+%and environmental challenge for the HPC community.
+
+%Although sometimes controversial, the Top500 \cite{top:500} \cite{meuer:500} is recognized as an
+%instrumental tool in analyzing the HPC market \cite{meuer:toplook} and
+%a ``treasure trove of information'' used to trace and project HPC architectural trends
+%\cite{kogge:using}. The Green500
+%\cite{green:500}
+%\cite{subramaniam:trends}
+%\cite{feng:green500list}
+%\cite{scogland:green500list}
+%has also been controversial (perhaps for different reasons),
+%but it is generally viewed to have helped stimulate a focus on HPC energy
+%efficiency trends. In 2010, the EE HPC WG prompted a collaborative effort between
+%the Top500, Green500 and The Green Grid \cite{green:grid} to agree
+%upon workloads, methodologies
+%and metrics for measuring the energy efficiency of HPC systems as a function
+%of both computational work accomplished and power consumed.
+
+%The major focus of this collaboration has been on improving the methodology by
+%which power and energy is measured while running a workload. In early 2011,
+%the EE HPC WG undertook a survey of power submissions to the Green500 and the
+%Top500 lists. The survey demonstrates that there was a wide variation in the
+%quality of the measurements used for reporting power.
+%\cite{eehpgwg:submission}
+ %A few of the power
+%submissions were very comprehensive and reflected a high level of quality.
+%A number of the submissions were based on sampling and extrapolation and
+%reflected a moderate level of quality. But almost half of the Green500 list
+%power numbers were not based on measured power, but were simply derived from
+%the vendor specifications. (Submissions for power use in the Top500 were more
+%sparse, so the Green500 list was used as the larger sample set.) The survey
+%identified the following methodology complexities and issues:
+
+%\begin{itemize}
+%\item fuzzy lines of demarcation between the computer system and the data center infrastructure, e.g., fans, power supplies, liquid cooling
+%\item shared resources, e.g., storage and networking
+%\item limitations on data center and system instrumentation for system level power measurement
+%\end{itemize}
+
+%A broad community-based process was followed for developing the improved power
+%measurement methodology. The collaboration includes participation from the
+%Top500, Green500, Green Grid and a sub-team of the EE HPC WG. The document has
+%completed alpha and beta testing with results presented at Birds of Feather sessions
+%for ISC12 and SC12. It is intended that both the Green500 and the Top500 will
+%adopt this methodology for future submissions. Discussion is also underway to
+%have the same methodology used by other lists, such as the Green Graph500
+%\cite{greengraph:500}.
+
+%This paper describes the power measurement methodology defined in
+%\cite{yoshii:eval}
+%It also describes the results from case studies at BADW-LRZ, Argonne National
+%Laboratory and Calcul Qu\'{e}bec, Universit\'{e} Laval.
